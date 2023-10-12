@@ -13,11 +13,16 @@ import Profile from './Components/Profile';
 import SymptomsList from './Components/Symptoms';
 import GetAppointment from './Components/Appointment';
 import Goals from './Components/Goals';
-
+import CookieManager from 'react-native-cookies';
 
 
 const Drawer = createDrawerNavigator();
-
+async function usercookie()
+{
+  let cookie = await CookieManager.get('user');
+  console.log('cookie sending is',cookie);
+  axios.post("/initializeuser",cookie).then(responce=>{console.log(responce.data);}).catch(err=>{console.log(err);})
+}
 export default function App()
 {
   const [loggedin, setloggedin] = useState(false);
@@ -30,6 +35,7 @@ export default function App()
       {
         setloggedin(false);
       })
+      usercookie();
   })
   return (
     <NavigationContainer>
