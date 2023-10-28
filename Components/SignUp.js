@@ -8,6 +8,10 @@ import Footercomp from './Footer';
 import axios from '../axios';
 import Spinner from './Spinner';
 import OTP from './OTP';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-google-signin/google-signin';
+GoogleSignin.configure();
+import config from '../config';
 
 const SignUp = ({ setLoggedin }) => {
   const navigate = useNavigation();
@@ -70,26 +74,38 @@ const SignUp = ({ setLoggedin }) => {
         setloading(false);
 
       })
-    // fetch( `https://healthtracker-jwpl.onrender.com/sign`, {
-    //   method: 'POST',
-    //   credentials: 'include',
-    //   body: new URLSearchParams(user)
-    // })
-    //   .then(response =>
-    //   {
-    //     if (response.status === 200) {
-    //     setshowotp(true);
-    //     setloading(false);
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(result =>
-    //   {
-    //     Alert.alert('User Already Exist! Please Login')
-    //     console.log(result);
-    //   });
-
   }
+  const signInWithGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      let userInfo = await GoogleSignin.signIn();
+      userInfo.API = config.API;
+      console.log('userinfo', userInfo);
+      setloading(true);
+      axios.post("/androidgooglesign", { userInfo: userInfo })
+        .then(result => {
+          console.log(result.data);
+          const token = result.data?.token;
+          console.log('jwt token received', token);
+          if (token) {
+            AsyncStorage.setItem('token', token).then(() => { console.log('token saved'); })
+          }
+          setLoggedin(true);
+        })
+        .catch(async err => {
+          Alert.alert('Error', 'Something Error Occured');
+          try {
+            await GoogleSignin.revokeAccess();
+          } catch (error) {
+          }
+        })
+        .finally(() => { setloading(false) });
+      // setuserdata(userInfo.user);
+      // Is it good to send userdata in backend from here
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ScrollView>
       <Header1></Header1>
@@ -109,10 +125,11 @@ const SignUp = ({ setLoggedin }) => {
           <View className="w-fit p-2 m-5">
             <Button title='Sign Up' onPress={() => { signupuser() }}></Button>
           </View>
-          <TouchableOpacity style={styles.googleButton} onPress={() => { 
+          <TouchableOpacity style={styles.googleButton} onPress={() => {
+            signInWithGoogle();
             // Linking.openURL('http://localhost:5500/auth/google') 
-            Alert.alert('Unavailable','try custom sign up')
-            }}>
+            // Alert.alert('Unavailable','try custom sign up')
+          }}>
             <View style={styles.iconContainer}>
               <Text style={styles.iconText}>G</Text>
             </View>

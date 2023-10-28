@@ -1,4 +1,4 @@
-package com.temp;
+package com.healthtracker;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

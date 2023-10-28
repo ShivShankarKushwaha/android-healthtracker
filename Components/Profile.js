@@ -5,6 +5,9 @@ import Header1 from './Header1';
 import Footercomp from './Footer';
 import Spinner from './Spinner';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-google-signin/google-signin';
+GoogleSignin.configure();
 
 function Profile({setLoggedin}) {
   const navigate =useNavigation();
@@ -31,10 +34,16 @@ function Profile({setLoggedin}) {
   {
     axios.get("/logout")
     .then(result=>{
+      GoogleSignin.revokeAccess().then(() => { console.log('google logout'); })
+      AsyncStorage.removeItem('token').then(() => { console.log('Jwt token removed from profile page'); })
       console.log(result.data);
       setLoggedin(false);
       navigate.navigate('Login')
     })
+    .catch(err=>
+      {
+        console.log('error loggedout',err);
+      })
   }
   return (
     <ScrollView className="scroll-smooth">
@@ -60,7 +69,9 @@ function Profile({setLoggedin}) {
             <Text className="mx-auto p-2 bg-red-700 text-white">Log Out</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={()=>{navigate.navigate('ResetPass')}}>
           <Text className='shadow-sm p-2 text-lg cursor-pointer bg-slate-300'>Reset Password</Text>
+        </TouchableOpacity>
       </View>:null}
       <Footercomp></Footercomp>
     </ScrollView>

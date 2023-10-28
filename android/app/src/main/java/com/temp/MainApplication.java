@@ -1,4 +1,4 @@
-package com.temp;
+package com.healthtracker;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

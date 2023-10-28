@@ -13,20 +13,20 @@ import Profile from './Components/Profile';
 import SymptomsList from './Components/Symptoms';
 import GetAppointment from './Components/Appointment';
 import Goals from './Components/Goals';
-import CookieManager from 'react-native-cookies';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ResetPassword from './Components/ResetPassword';
 
 const Drawer = createDrawerNavigator();
-async function usercookie()
-{
-  let cookie = await CookieManager.get('user');
-  console.log('cookie sending is',cookie);
-  axios.post("/initializeuser",cookie).then(responce=>{console.log(responce.data);}).catch(err=>{console.log(err);})
-}
 export default function App()
 {
   const [loggedin, setloggedin] = useState(false);
   if (typeof drawerLabel === "function" && drawerLabel() === null) return null;
+  async function usercookie()
+  {
+    let user =await AsyncStorage.getItem('token');
+    user = "user=" + user;
+    axios.post("/initializeuser", {user:user}).then(responce => { console.log(responce.data);setloggedin(true) }).catch(err => { console.log(err);setloggedin(false);AsyncStorage.removeItem('token').then(()=>{console.log('token deleted');}) })
+  }
   useEffect(() =>
   {
     axios.get("/user")
@@ -36,7 +36,7 @@ export default function App()
         setloggedin(false);
       })
       usercookie();
-  })
+  },[])
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
@@ -50,6 +50,7 @@ export default function App()
         {loggedin && <Drawer.Screen options={{ headerShown: '' }} name="Symptom" component={SymptomsList} />}
         {loggedin && <Drawer.Screen options={{ headerShown: '' }} name="GetAppointments" component={GetAppointment} />}
         {loggedin && <Drawer.Screen options={{ headerShown: '' }} name="Exercize Goals" component={Goals} />}
+        {loggedin && <Drawer.Screen options={{ headerShown: '', drawerItemStyle: { display: 'none' } }} name="ResetPass" component={ResetPassword} />}
       </Drawer.Navigator>
     </NavigationContainer>
   );

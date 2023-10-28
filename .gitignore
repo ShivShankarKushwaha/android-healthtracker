@@ -67,3 +67,4 @@ yarn-error.log
 ECHO is off.
 /node_modules 
 .env 
+config.js 
