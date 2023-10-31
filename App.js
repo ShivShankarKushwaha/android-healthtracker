@@ -15,6 +15,7 @@ import GetAppointment from './Components/Appointment';
 import Goals from './Components/Goals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ResetPassword from './Components/ResetPassword';
+import SplashScreen from 'react-native-splash-screen';
 
 const Drawer = createDrawerNavigator();
 export default function App()
@@ -29,6 +30,7 @@ export default function App()
   }
   useEffect(() =>
   {
+    SplashScreen.hide();
     axios.get("/user")
       .then(result => { setloggedin(true) })
       .catch(err =>
