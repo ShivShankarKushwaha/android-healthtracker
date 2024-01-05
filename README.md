@@ -8,9 +8,9 @@ To get started with HealthTracker, follow these steps for a seamless installatio
 
 ### Option 1: APK Installation
 
-1. Download the APK file from the repository: [healthtracker.apk](./healthtracker.apk)
+1. Download the APK file from the repository: [healthtracker.apk](./Health%20Tracker.apk)
    - _or_
-   Install directly from [this Google Drive link](https://drive.google.com/file/d/1Mxy37ChPjAbJ8sA5MRz5nPUd6Kt34Da1/view?usp=sharing).
+   Install directly from [this Google Drive link](https://drive.google.com/file/d/1jpKVyNdhwllFdUbMy5LDhiiCzZc1lpUe/view?usp=sharing).
 
 ### Option 2: Repository Installation
 
